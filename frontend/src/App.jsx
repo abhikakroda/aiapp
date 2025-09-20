@@ -4,7 +4,9 @@ const THEME_KEY = 'quanta-theme';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_BACKEND_URL || '';
+
 
 const initialMessages = [
   {

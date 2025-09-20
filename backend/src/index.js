@@ -19,7 +19,22 @@ if (!GEMINI_API_KEY) {
   console.warn('[startup] Missing GEMINI_API_KEY. Requests to Gemini will fail until it is provided.');
 }
 
-app.use(cors({ origin: CLIENT_ORIGIN.split(',').map((origin) => origin.trim()), credentials: false }));
+const allowedOrigins = CLIENT_ORIGIN.split(',').map((o) => o.trim());
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like curl or server-to-server)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`[cors] Blocked origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  })
+);
+
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/health', (_req, res) => {
